@@ -1,0 +1,10 @@
+Journal Fraktur is a renamed, subsetted derivative of Latin Modern Math 1.959,
+by Boguslaw Jackowski, Piotr Strzelczyk and Piotr Pianowski.
+Its bold Fraktur glyphs are mapped to regular Latin codepoints for headings.
+The derived font is embedded in fonts.css. build-font-css.py contains the
+changes and can regenerate it from the original OpenType font files.
+Upstream source and notices: https://ctan.org/pkg/lm-math
+
+Journal Roman is a CSS family alias for the unchanged Latin Modern Roman
+10 regular and bold OpenType faces, embedded in fonts.css.
+Upstream source and notices: https://ctan.org/pkg/lm

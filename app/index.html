@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#15121b">
+<meta name="description" content="Log physical training, claim your daily rewards, and enter an instance dungeon.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' file:; font-src 'self' file: data:; img-src 'self' file: data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>The System</title>
+<link rel="icon" href="crest.svg">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="style.css">
+<script defer src="training.js"></script>
+<script defer src="app.js"></script>
+</head>
+<body>
+<svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<symbol id="quest" viewBox="0 0 24 24"><path d="M9 5H5v16h14V5h-4M9 3h6v4H9zM8 12h8m-8 4h5"/></symbol>
+<symbol id="gate" viewBox="0 0 24 24"><path d="M3 21h18M6 21V10l6-7 6 7v11M10 21v-8l2-3 2 3v8"/></symbol>
+<symbol id="trophy" viewBox="0 0 24 24"><path d="M8 4h8v6a4 4 0 0 1-8 0ZM8 6H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 2v5m-4 1h8"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="#today"><img src="crest.svg" width="36" height="36" alt="">The System</a>
+    <nav aria-label="Game sections">
+      <a class="nav-link" href="#today" aria-current="page"><svg aria-hidden="true"><use href="#quest"/></svg> Daily Quest</a>
+      <a class="nav-link" href="#dungeon"><svg aria-hidden="true"><use href="#gate"/></svg> Dungeon</a>
+      <a class="nav-link" href="#character"><svg aria-hidden="true"><use href="#trophy"/></svg> Status</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <section id="today" data-view aria-labelledby="today-title">
+    <header class="page-head"><p class="eyebrow">System notification</p><h1 id="today-title" tabindex="-1">Strength Training</h1><p id="date" class="hint"></p></header>
+    <aside id="penalty" class="panel penalty" aria-labelledby="penalty-title" hidden>
+      <div><strong id="penalty-title">Penalty Zone</strong><p id="penalty-copy"></p></div>
+      <button id="dismiss-penalty" class="button" type="button">Return</button>
+    </aside>
+    <section class="panel training-card" aria-labelledby="objectives-title">
+      <div class="section-head training-head">
+        <div><p class="eyebrow">Daily quest</p><h2 id="objectives-title">Quest objectives</h2></div>
+        <div class="deadline"><span>Resets at midnight</span><strong id="countdown"></strong></div>
+      </div>
+      <div class="training-controls">
+        <label for="preset">Target preset</label>
+        <select id="preset" aria-describedby="preset-hint"></select>
+      </div>
+      <p id="preset-hint" class="hint"></p>
+      <form id="training-form">
+        <ul id="exercises" class="exercise-list"></ul>
+        <div class="training-actions">
+          <button id="save-training" class="button" type="submit">Save progress</button>
+          <button id="rest-day" class="text-button" type="button">Take a rest day</button>
+        </div>
+      </form>
+      <div class="reward-row">
+        <div><strong id="quest-state"></strong><p class="hint">Full Recovery · +3 stat points · Random Box</p></div>
+        <button id="claim-rewards" class="button primary" type="button" disabled>Claim rewards</button>
+      </div>
+    </section>
+    <a class="gate-link panel" href="#dungeon">
+      <span class="gate-icon"><svg aria-hidden="true"><use href="#gate"/></svg></span>
+      <span><strong>Instance Dungeon</strong><small id="gate-summary"></small></span>
+      <span class="gate-arrow" aria-hidden="true">→</span>
+    </a>
+  </section>
+  <section id="dungeon" data-view hidden aria-labelledby="dungeon-title">
+    <header class="page-head"><p class="eyebrow">Subway instance</p><h1 id="dungeon-title" tabindex="-1">Instance Dungeon</h1></header>
+    <section class="panel boss-card" aria-labelledby="boss-name">
+      <div class="gate-art" aria-hidden="true">
+        <svg viewBox="0 0 220 170">
+          <defs><radialGradient id="rift"><stop stop-color="#c5f8ff"/><stop offset=".4" stop-color="#3376ab"/><stop offset="1" stop-color="#152344"/></radialGradient></defs>
+          <path d="M110 6 207 85l-97 79L13 85Z" stroke="#5078a1" stroke-dasharray="2 6"/>
+          <path d="M110 18 188 85l-78 67-78-67Z" stroke="#638ebd" opacity=".65"/>
+          <path d="M70 138V67l40-42 40 42v71Z" fill="#172b4c" stroke="#7bb9dc"/>
+          <path d="M81 138V72l29-32 29 32v66Z" fill="url(#rift)" stroke="#b2e7ff"/>
+          <path d="M99 116 119 89l-13-3 16-23" stroke="#e4fbff" stroke-width="2"/>
+          <path d="M56 138h108m-119 7h130" stroke="#96c9e4" opacity=".6"/>
+        </svg>
+      </div>
+      <div class="boss-copy">
+        <div class="boss-meta"><span class="badge" id="boss-state"></span><span id="key-count"></span></div>
+        <h2 id="boss-name">Blue Venom-Fanged Kasaka</h2>
+        <p id="boss-health-label" class="hint"></p>
+        <progress id="boss-health" aria-label="Kasaka health remaining"></progress>
+        <p id="dungeon-goal" class="hint"></p>
+        <div id="dungeon-actions" class="dungeon-actions">
+          <button id="enter-dungeon" class="button primary" type="button">Use dungeon key</button>
+          <button id="use-potion" class="button" type="button" hidden>Use health potion</button>
+        </div>
+      </div>
+    </section>
+    <p class="how-to">After entering, each later daily quest you claim lands one hit. Three hits clear the instance and award 100 XP. The encounter waits while you rest.</p>
+  </section>
+  <section id="character" data-view hidden aria-labelledby="character-title">
+    <header class="page-head"><p class="eyebrow">Player record</p><h1 id="character-title" tabindex="-1">Status Window</h1><p id="character-status" class="hint"></p></header>
+    <div class="panel xp-panel">
+      <div class="section-head"><span class="badge" id="level"></span><strong id="xp-label"></strong></div>
+      <progress id="xp" aria-label="Experience to next level"></progress>
+    </div>
+    <div class="character-grid">
+      <section class="panel record" aria-labelledby="stats-title">
+        <div class="section-head"><h2 id="stats-title">Attributes</h2><span id="unspent" class="badge"></span></div>
+        <div id="stats"></div>
+      </section>
+      <section class="panel record" aria-labelledby="inventory-title">
+        <h2 id="inventory-title">Inventory</h2>
+        <ul id="inventory"></ul>
+        <button id="open-box" class="button primary" type="button" disabled>Open Random Box</button>
+      </section>
+    </div>
+  </section>
+  <footer>Progress is saved on this device.</footer>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
